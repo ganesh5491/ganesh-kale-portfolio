@@ -1,7 +1,6 @@
 import React from 'react';
-import { Mail, MapPin, Heart } from 'lucide-react';
+import { Mail, Phone, MapPin, Heart } from 'lucide-react';
 import { personalInfo } from '../data/portfolioData';
-import { GithubIcon, LinkedinIcon, TwitterIcon } from './Icons';
 
 export default function Footer() {
   const quickLinks = [
@@ -45,48 +44,26 @@ export default function Footer() {
               </div>
             </a>
 
-            <p className="text-xs sm:text-sm text-[var(--text-body)] leading-relaxed mb-6 max-w-sm">
+            <p className="text-xs sm:text-sm text-[var(--text-body)] leading-relaxed mb-5 max-w-sm">
               Building modern websites and web applications that create real impact.
             </p>
 
-            {/* Social Icons */}
-            <div className="flex items-center gap-2.5">
+            {/* Direct Email & Contact Number */}
+            <div className="flex flex-col sm:flex-row flex-wrap items-start gap-2.5">
               <a
-                href={personalInfo.socialLinks.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:border-blue-400 transition-colors"
-                aria-label="LinkedIn"
+                href={`mailto:${personalInfo.email}`}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/60 text-xs font-semibold hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all shadow-xs"
               >
-                <LinkedinIcon size={16} />
+                <Mail size={13} />
+                <span>{personalInfo.email}</span>
               </a>
 
               <a
-                href={personalInfo.socialLinks.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-400 transition-colors"
-                aria-label="GitHub"
+                href={`tel:${personalInfo.phone}`}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60 text-xs font-semibold hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white transition-all shadow-xs"
               >
-                <GithubIcon size={16} />
-              </a>
-
-              <a
-                href={personalInfo.socialLinks.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-sky-500 hover:border-sky-400 transition-colors"
-                aria-label="Twitter"
-              >
-                <TwitterIcon size={16} />
-              </a>
-
-              <a
-                href={personalInfo.socialLinks.email}
-                className="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:border-blue-400 transition-colors"
-                aria-label="Email"
-              >
-                <Mail size={16} />
+                <Phone size={13} />
+                <span>{personalInfo.phoneFormatted || personalInfo.phone}</span>
               </a>
             </div>
           </div>
@@ -141,6 +118,14 @@ export default function Footer() {
               >
                 <Mail size={14} className="text-blue-600 flex-shrink-0" />
                 <span className="break-all">{personalInfo.email}</span>
+              </a>
+
+              <a
+                href={`tel:${personalInfo.phone}`}
+                className="flex items-center gap-2.5 text-xs text-[var(--text-body)] hover:text-emerald-600 transition-colors"
+              >
+                <Phone size={14} className="text-emerald-600 flex-shrink-0" />
+                <span>{personalInfo.phoneFormatted || personalInfo.phone}</span>
               </a>
 
               <div className="flex items-center gap-2.5 text-xs text-[var(--text-body)]">

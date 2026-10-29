@@ -1,15 +1,65 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { 
   Globe, 
   Layers, 
   Database, 
   Sparkles,
-  Check
+  Check,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { servicesList } from '../data/portfolioData';
 import RevealOnScroll from './common/RevealOnScroll';
 
+function ServiceCard({ service, theme, Icon }) {
+  return (
+    <div
+      className={`theme-card relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between group bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 ${theme.hoverBorder} ${theme.hoverShadow} ${theme.hoverBg} hover:-translate-y-1.5 transition-all duration-300 h-full overflow-hidden`}
+    >
+      {/* Top Colorful Accent Gradient Line */}
+      <div className={`absolute top-0 left-0 right-0 h-1.5 ${theme.accentBar}`}></div>
+
+      <div>
+        {/* Glowing Colorful Icon Container */}
+        <div
+          className={`w-13 h-13 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 ${theme.iconBg}`}
+        >
+          <Icon size={24} />
+        </div>
+
+        {/* Title */}
+        <h3 className={`text-lg font-bold text-[var(--text-heading)] mb-2.5 transition-colors duration-200 ${theme.titleHover}`}>
+          {service.title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-xs sm:text-sm text-[var(--text-body)] leading-relaxed mb-6 font-normal">
+          {service.description}
+        </p>
+      </div>
+
+      {/* Feature Tags */}
+      <div className="pt-4 border-t border-slate-100 dark:border-slate-700/60">
+        <div className="flex flex-wrap gap-1.5">
+          {theme.features.map((feat, fIdx) => (
+            <span
+              key={fIdx}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold tracking-wide ${theme.tagBg}`}
+            >
+              <Check size={10} className="stroke-[2.5]" />
+              {feat}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Services({ onSelectService }) {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const sliderRef = useRef(null);
+
   const iconMap = {
     globe: Globe,
     layers: Layers,
@@ -65,6 +115,33 @@ export default function Services({ onSelectService }) {
     }
   ];
 
+  const handleMobileScroll = (e) => {
+    const el = e.currentTarget;
+    const card = el.firstElementChild;
+    if (!card) return;
+    const scrollPos = el.scrollLeft;
+    const cardWidth = card.clientWidth + 16; // gap-4 = 16px
+    const index = Math.round(scrollPos / cardWidth);
+    setActiveSlide(Math.min(servicesList.length - 1, Math.max(0, index)));
+  };
+
+  const scrollToSlide = (index) => {
+    if (!sliderRef.current) return;
+    const card = sliderRef.current.children[index];
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+    setActiveSlide(index);
+  };
+
+  const scrollPrev = () => {
+    scrollToSlide(Math.max(0, activeSlide - 1));
+  };
+
+  const scrollNext = () => {
+    scrollToSlide(Math.min(servicesList.length - 1, activeSlide + 1));
+  };
+
   return (
     <section id="services" className="py-20 md:py-28 relative overflow-hidden bg-slate-50/60 dark:bg-slate-900/30 border-y border-slate-100 dark:border-slate-800/80">
       
@@ -77,7 +154,7 @@ export default function Services({ onSelectService }) {
         
         {/* Section Header */}
         <RevealOnScroll direction="up">
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <div className="theme-pill mb-3">
               <span className="font-bold tracking-wider uppercase text-[11px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 My Services
@@ -95,58 +172,84 @@ export default function Services({ onSelectService }) {
           </div>
         </RevealOnScroll>
 
-        {/* 4 Vibrant, Colorful Cards (Bottom arrows removed) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Desktop View: 4-Column Grid (hidden on mobile, visible on sm and up) */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {servicesList.map((service, idx) => {
             const Icon = iconMap[service.icon] || Globe;
             const theme = serviceThemes[idx % serviceThemes.length];
 
             return (
               <RevealOnScroll key={service.id} delay={idx * 100} direction="up" className="h-full">
-                <div
-                  className={`theme-card relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between group bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 ${theme.hoverBorder} ${theme.hoverShadow} ${theme.hoverBg} hover:-translate-y-1.5 transition-all duration-300 h-full overflow-hidden`}
-                >
-                  {/* Top Colorful Accent Gradient Line */}
-                  <div className={`absolute top-0 left-0 right-0 h-1.5 ${theme.accentBar}`}></div>
-
-                  <div>
-                    {/* Glowing Colorful Icon Container */}
-                    <div
-                      className={`w-13 h-13 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 ${theme.iconBg}`}
-                    >
-                      <Icon size={24} />
-                    </div>
-
-                    {/* Title */}
-                    <h3 className={`text-lg font-bold text-[var(--text-heading)] mb-2.5 transition-colors duration-200 ${theme.titleHover}`}>
-                      {service.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-xs sm:text-sm text-[var(--text-body)] leading-relaxed mb-6 font-normal">
-                      {service.description}
-                    </p>
-                  </div>
-
-                  {/* Feature Tags (Replaces the bottom arrow for a richer, more colorful design) */}
-                  <div className="pt-4 border-t border-slate-100 dark:border-slate-700/60">
-                    <div className="flex flex-wrap gap-1.5">
-                      {theme.features.map((feat, fIdx) => (
-                        <span
-                          key={fIdx}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold tracking-wide ${theme.tagBg}`}
-                        >
-                          <Check size={10} className="stroke-[2.5]" />
-                          {feat}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                </div>
+                <ServiceCard service={service} theme={theme} Icon={Icon} />
               </RevealOnScroll>
             );
           })}
+        </div>
+
+        {/* Mobile View: Smooth Touch Slider (visible only on mobile < sm) */}
+        <div className="sm:hidden">
+          <div
+            ref={sliderRef}
+            onScroll={handleMobileScroll}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 -mx-4 px-4 scrollbar-none"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {servicesList.map((service, idx) => {
+              const Icon = iconMap[service.icon] || Globe;
+              const theme = serviceThemes[idx % serviceThemes.length];
+
+              return (
+                <div
+                  key={service.id}
+                  className="w-[85vw] max-w-[320px] flex-shrink-0 snap-center"
+                >
+                  <ServiceCard service={service} theme={theme} Icon={Icon} />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Mobile Slider Controls: Indicator Dots + Arrow Buttons */}
+          <div className="flex items-center justify-between pt-3 px-1">
+            {/* Dots */}
+            <div className="flex items-center gap-1.5">
+              {servicesList.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => scrollToSlide(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    activeSlide === idx 
+                      ? 'w-6 bg-blue-600 dark:bg-blue-500' 
+                      : 'w-2 bg-slate-300 dark:bg-slate-700'
+                  }`}
+                  aria-label={`Go to service ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mr-1">
+                {activeSlide + 1} / {servicesList.length}
+              </span>
+              <button
+                onClick={scrollPrev}
+                disabled={activeSlide === 0}
+                className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 shadow-xs hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none"
+                aria-label="Previous service"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                onClick={scrollNext}
+                disabled={activeSlide === servicesList.length - 1}
+                className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 shadow-xs hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none"
+                aria-label="Next service"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowUpRight, ExternalLink } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { projectCategories, projectsList } from '../data/portfolioData';
 import RevealOnScroll from './common/RevealOnScroll';
 
@@ -103,6 +103,8 @@ function LazyImage({ src, alt, className = '' }) {
 
 export default function FeaturedProjects() {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [activeProjectSlide, setActiveProjectSlide] = useState(0);
+  const projectSliderRef = useRef(null);
 
   const filteredProjects = activeCategory === 'All'
     ? projectsList
@@ -110,6 +112,40 @@ export default function FeaturedProjects() {
 
   const topProjects = projectsList.filter(p => p.featured);
   const remainingProjects = projectsList.filter(p => !p.featured);
+
+  const handleCategoryChange = (cat) => {
+    setActiveCategory(cat);
+    setActiveProjectSlide(0);
+    if (projectSliderRef.current) {
+      projectSliderRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleProjectScroll = (e) => {
+    const el = e.currentTarget;
+    const card = el.firstElementChild;
+    if (!card) return;
+    const cardWidth = card.clientWidth + 16;
+    const index = Math.round(el.scrollLeft / cardWidth);
+    setActiveProjectSlide(Math.min(filteredProjects.length - 1, Math.max(0, index)));
+  };
+
+  const scrollToProjectSlide = (index) => {
+    if (!projectSliderRef.current) return;
+    const card = projectSliderRef.current.children[index];
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+    setActiveProjectSlide(index);
+  };
+
+  const scrollProjectPrev = () => {
+    scrollToProjectSlide(Math.max(0, activeProjectSlide - 1));
+  };
+
+  const scrollProjectNext = () => {
+    scrollToProjectSlide(Math.min(filteredProjects.length - 1, activeProjectSlide + 1));
+  };
 
   return (
     <section id="projects" className="py-20 md:py-28 relative">
@@ -133,7 +169,7 @@ export default function FeaturedProjects() {
 
             <a
               href="#projects"
-              onClick={() => setActiveCategory('All')}
+              onClick={() => handleCategoryChange('All')}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors whitespace-nowrap self-start md:self-auto"
             >
               <span>View All ({projectsList.length} Projects)</span>
@@ -144,11 +180,11 @@ export default function FeaturedProjects() {
 
         {/* Filter Categories Row */}
         <RevealOnScroll direction="up" delay={100}>
-          <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex items-center gap-2 mb-8 sm:mb-10 overflow-x-auto pb-2 scrollbar-none">
             {projectCategories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setActiveCategory(cat)}
+                onClick={() => handleCategoryChange(cat)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   activeCategory === cat
                     ? 'bg-[#0c1222] text-white shadow-xs'
@@ -161,8 +197,130 @@ export default function FeaturedProjects() {
           </div>
         </RevealOnScroll>
 
-        {/* Dynamic Project Cards Layout */}
-        {activeCategory === 'All' ? (
+        {/* Mobile View: Smooth Swipeable Project Slider (visible on mobile < sm) */}
+        <div className="sm:hidden mb-6">
+          <div
+            ref={projectSliderRef}
+            onScroll={handleProjectScroll}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 pt-1 -mx-4 px-4 scrollbar-none"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {filteredProjects.map((proj) => (
+              <div
+                key={proj.id}
+                className="w-[86vw] max-w-[340px] flex-shrink-0 snap-center"
+              >
+                <div className="theme-card p-5 flex flex-col justify-between bg-white dark:bg-slate-800 h-full rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-md">
+                  <div>
+                    {/* Media Container */}
+                    <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4 bg-slate-900 border border-slate-100 dark:border-slate-700">
+                      {proj.video ? (
+                        <LazyVideo
+                          src={proj.video}
+                          poster={proj.image}
+                          badgeText="Video Walkthrough"
+                          className="w-full h-full"
+                        />
+                      ) : (
+                        <LazyImage
+                          src={proj.image}
+                          alt={proj.title}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      <div className={`absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide backdrop-blur-sm z-10 ${proj.badgeColor}`}>
+                        {proj.badge}
+                      </div>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-[var(--text-heading)] mb-1">
+                      {proj.title}
+                    </h3>
+
+                    {proj.subtitle && (
+                      <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                        {proj.subtitle}
+                      </p>
+                    )}
+
+                    <p className="text-xs text-[var(--text-body)] mb-4 line-clamp-3 leading-relaxed">
+                      {proj.description}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/80">
+                    <div className="flex flex-wrap gap-1.5 max-w-[65%]">
+                      {proj.tags.slice(0, 3).map((tag, tIdx) => (
+                        <span
+                          key={tIdx}
+                          className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700/60 text-[10px] font-medium text-slate-600 dark:text-slate-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <a
+                      href={proj.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs"
+                    >
+                      <span>Live</span>
+                      <ArrowUpRight size={13} />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile Slider Controls: Indicator Dots + Arrow Buttons */}
+          <div className="flex items-center justify-between pt-3 px-1">
+            {/* Dots */}
+            <div className="flex items-center gap-1.5 max-w-[55%] overflow-hidden">
+              {filteredProjects.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => scrollToProjectSlide(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    activeProjectSlide === idx 
+                      ? 'w-6 bg-blue-600 dark:bg-blue-500' 
+                      : 'w-2 bg-slate-300 dark:bg-slate-700'
+                  }`}
+                  aria-label={`Go to project slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mr-1">
+                {activeProjectSlide + 1} / {filteredProjects.length}
+              </span>
+              <button
+                onClick={scrollProjectPrev}
+                disabled={activeProjectSlide === 0}
+                className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 shadow-xs hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none"
+                aria-label="Previous project"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                onClick={scrollProjectNext}
+                disabled={activeProjectSlide === filteredProjects.length - 1}
+                className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 shadow-xs hover:bg-slate-50 active:scale-95 transition-all disabled:opacity-30 disabled:pointer-events-none"
+                aria-label="Next project"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop / Tablet View: Multi-column Grid (hidden on mobile, visible on sm and up) */}
+        <div className="hidden sm:block">
+          {activeCategory === 'All' ? (
           <div className="space-y-6">
             
             {/* Row 1: 2 Standout Featured Cards */}
@@ -372,6 +530,7 @@ export default function FeaturedProjects() {
             ))}
           </div>
         )}
+        </div>
 
       </div>
     </section>

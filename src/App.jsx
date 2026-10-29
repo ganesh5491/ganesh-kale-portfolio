@@ -10,6 +10,7 @@ import Process from './components/Process';
 import Testimonials from './components/Testimonials';
 import CtaBanner from './components/CtaBanner';
 import Footer from './components/Footer';
+import WhatsAppChatButton from './components/WhatsAppChatButton';
 
 // Lazy-load modals only when clicked
 const ContactModal = lazy(() => import('./components/ContactModal'));
@@ -71,6 +72,9 @@ export default function App() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Floating WhatsApp Chat Button */}
+      <WhatsAppChatButton />
 
       {/* Interactive Contact & Resume Modals (Lazy Loaded on Demand) */}
       {isContactOpen && (

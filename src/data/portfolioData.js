@@ -11,8 +11,9 @@ import zelixImg from '../assets/project-zelix.png';
 export const personalInfo = {
   name: "Ganesh Kale",
   role: "Full Stack Developer",
-  email: "ganeshkale2002@gmail.com",
-  phone: "+91 98765 43210",
+  email: "ganeshkale030303@gmail.com",
+  phone: "9028441589",
+  phoneFormatted: "+91 90284 41589",
   location: "Pune, Maharashtra, India",
   availability: "Available for work",
   yearsExperience: "2+",
@@ -27,7 +28,7 @@ export const personalInfo = {
     github: "https://github.com",
     linkedin: "https://linkedin.com",
     twitter: "https://twitter.com",
-    email: "mailto:ganeshkale2002@gmail.com"
+    email: "mailto:ganeshkale030303@gmail.com"
   }
 };
 

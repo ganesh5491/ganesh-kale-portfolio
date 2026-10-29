@@ -10,7 +10,7 @@ import {
   MessageSquare, 
   CheckCircle2 
 } from 'lucide-react';
-import { GithubIcon, LinkedinIcon, TwitterIcon } from './Icons';
+import { GithubIcon, LinkedinIcon, TwitterIcon, WhatsAppIcon } from './Icons';
 import { personalInfo } from '../data/portfolioData';
 import { playPop, playSuccess } from '../utils/soundEffects';
 
@@ -18,6 +18,7 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     subject: '',
     message: '',
   });
@@ -35,18 +36,29 @@ export default function Contact() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
+    if (!formData.name || !formData.email || !formData.phone || !formData.message) return;
 
     playPop();
     setIsSubmitting(true);
+
+    const phoneTarget = '919028441589';
+    const text = `*New Portfolio Inquiry*\n\n` +
+      `👤 *Name:* ${formData.name}\n` +
+      `📞 *Phone:* ${formData.phone}\n` +
+      `✉️ *Email:* ${formData.email}\n` +
+      (formData.subject ? `📌 *Subject:* ${formData.subject}\n` : '') +
+      `💬 *Message:* ${formData.message}`;
+
+    const whatsappUrl = `https://wa.me/${phoneTarget}?text=${encodeURIComponent(text)}`;
 
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
       playSuccess();
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      window.open(whatsappUrl, '_blank');
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       setTimeout(() => setIsSubmitted(false), 6000);
-    }, 1200);
+    }, 800);
   };
 
   return (
@@ -214,10 +226,10 @@ export default function Contact() {
               <div className="p-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center animate-in fade-in duration-300">
                 <CheckCircle2 size={40} className="text-emerald-400 mx-auto mb-3 animate-bounce" />
                 <h4 className="text-lg font-bold text-[var(--text-primary)] mb-1">
-                  Message Sent Successfully!
+                  Message Sent to WhatsApp!
                 </h4>
                 <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-sm mx-auto">
-                  Thank you for reaching out, Ganesh will review your message and reply promptly.
+                  Thank you for reaching out. Opening WhatsApp chat with Ganesh (+91 9028441589)...
                 </p>
               </div>
             ) : (
@@ -239,6 +251,22 @@ export default function Contact() {
 
                   <div>
                     <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="+91 90284 41589"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] focus:border-cyan-400 focus:outline-none text-xs sm:text-sm text-[var(--text-primary)] transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
                       Your Email *
                     </label>
                     <input
@@ -250,19 +278,19 @@ export default function Contact() {
                       className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] focus:border-cyan-400 focus:outline-none text-xs sm:text-sm text-[var(--text-primary)] transition-colors"
                     />
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Project Inquiry / Job Opportunity / Collaboration"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] focus:border-cyan-400 focus:outline-none text-xs sm:text-sm text-[var(--text-primary)] transition-colors"
-                  />
+                  <div>
+                    <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Project Inquiry / Collaboration"
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] focus:border-cyan-400 focus:outline-none text-xs sm:text-sm text-[var(--text-primary)] transition-colors"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -282,14 +310,14 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-md shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 cursor-pointer disabled:opacity-70"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20ba59] text-white font-semibold text-sm shadow-md shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-200 cursor-pointer disabled:opacity-70"
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     <>
-                      <Send size={16} />
-                      <span>Send Message</span>
+                      <WhatsAppIcon size={18} />
+                      <span>Send to WhatsApp (+91 9028441589)</span>
                     </>
                   )}
                 </button>

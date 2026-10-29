@@ -6,7 +6,9 @@ import {
   Users, 
   Target,
   Sparkles,
-  Code2
+  Code2,
+  Mail,
+  Phone
 } from 'lucide-react';
 import { personalInfo } from '../data/portfolioData';
 import profileImg from '../assets/profile.jpg';
@@ -127,9 +129,28 @@ export default function About({ onOpenResume }) {
               </h2>
 
               {/* Paragraph */}
-              <p className="text-base text-[var(--text-body)] leading-relaxed mb-7 max-w-xl">
+              <p className="text-base text-[var(--text-body)] leading-relaxed mb-5 max-w-xl">
                 {personalInfo.aboutBio}
               </p>
+
+              {/* Direct Email & Contact Number */}
+              <div className="flex flex-wrap items-center gap-3 mb-7">
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/60 text-xs sm:text-sm font-semibold hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all shadow-xs group"
+                >
+                  <Mail size={15} className="text-blue-500 group-hover:text-white transition-colors" />
+                  <span>{personalInfo.email}</span>
+                </a>
+
+                <a
+                  href={`tel:${personalInfo.phone}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60 text-xs sm:text-sm font-semibold hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white transition-all shadow-xs group"
+                >
+                  <Phone size={15} className="text-emerald-500 group-hover:text-white transition-colors" />
+                  <span>{personalInfo.phoneFormatted || personalInfo.phone}</span>
+                </a>
+              </div>
 
               {/* 4 Stat Cards Matching the exact reference cards */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 w-full">
