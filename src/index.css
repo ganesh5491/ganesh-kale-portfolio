@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+:root {
+  /* Default Theme: Exact Match to Reference Image (Luminous Pastel White) */
+  --bg-main: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-secondary: #f8fafc;
+  --bg-pill: #eff6ff;
+  --border-pill: #bfdbfe;
+  --text-pill: #2563eb;
+  --text-heading: #0c1222;
+  --text-body: #64748b;
+  --text-sub: #475569;
+  --border-card: #e2e8f0;
+  --btn-dark-bg: #0c1222;
+  --btn-dark-text: #ffffff;
+  --btn-light-bg: #ffffff;
+  --btn-light-border: #e2e8f0;
+  --btn-light-text: #0f172a;
+  --accent-blue: #2563eb;
+  --accent-orange: #f97316;
+  --accent-purple: #8b5cf6;
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 4px 10px -2px rgba(0, 0, 0, 0.02);
+  --card-shadow-hover: 0 20px 40px -10px rgba(37, 99, 235, 0.1);
+}
+
+[data-theme="dark"] {
+  /* Dark Impact Theme */
+  --bg-main: #090d16;
+  --bg-card: #111827;
+  --bg-card-secondary: #0f172a;
+  --bg-pill: rgba(37, 99, 235, 0.15);
+  --border-pill: rgba(59, 130, 246, 0.35);
+  --text-pill: #60a5fa;
+  --text-heading: #f8fafc;
+  --text-body: #94a3b8;
+  --text-sub: #cbd5e1;
+  --border-card: rgba(255, 255, 255, 0.08);
+  --btn-dark-bg: #2563eb;
+  --btn-dark-text: #ffffff;
+  --btn-light-bg: #1e293b;
+  --btn-light-border: rgba(255, 255, 255, 0.12);
+  --btn-light-text: #f8fafc;
+  --accent-blue: #38bdf8;
+  --accent-orange: #fb923c;
+  --accent-purple: #c084fc;
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 20px 40px -10px rgba(56, 189, 248, 0.2);
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Offset for fixed floating navbar when navigating to anchor IDs */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-heading);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Reference pill styling: Ideas -> Design -> Development -> Impact */
+.theme-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  background-color: var(--bg-pill);
+  border: 1px solid var(--border-pill);
+  color: var(--text-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  transition: transform 0.2s ease;
+}
+
+/* Reference Card Styling */
+.theme-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 1.25rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow;
+}
+
+.theme-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(37, 99, 235, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6);
+}
+
+/* Smooth Image Loading Transitions */
+img {
+  content-visibility: auto;
+}
+
+/* Micro smooth keyframes */
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 4s ease-in-out infinite;
+}
